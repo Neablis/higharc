@@ -1,5 +1,3 @@
-import User from '../entity/User';
-
 
 export type Context = Pick<Token, 'email' | 'admin'>
 

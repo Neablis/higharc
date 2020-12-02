@@ -13,7 +13,9 @@ import { createConnection } from 'typeorm';
 import {
   UserResolver,
 } from './resolvers';
+
 import router from './routes';
+
 import { authMiddleware, ErrorInterceptor, authChecker } from './utils';
 
 /** Create app */
@@ -23,7 +25,7 @@ const app = express();
 const appEnv = process.env.APP_ENV || 'development';
 
 /** Add middleware */
-const graphqlPath = '/graphql';
+const graphqlPath = '/';
 
 // TODO make this secure in production
 app.use(bodyParser.json());
@@ -42,7 +44,6 @@ createConnection()
       resolvers: [
         UserResolver,
       ],
-      // this is the type-graphql auth middleware for field-level auth
       authChecker,
       globalMiddlewares: [ErrorInterceptor],
     });
@@ -52,7 +53,8 @@ createConnection()
       playground: true,
       context: ({ req }) => {
         const context = {
-          user: req['user'], // from auth middleware
+          email: req['email'],
+          admin: req['admin']
         };
         return context;
       },

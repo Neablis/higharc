@@ -4,16 +4,18 @@ import {
   Arg,
   Mutation,
   Ctx,
+  Authorized,
 } from 'type-graphql';
 import { Context, LoginInput, SignupInput } from '../types';
 import { createToken, isPassword } from '../utils'
 import { validate } from "class-validator";
-import * as bcrypt from 'bcryptjs';
 
 import User from '../entity/User';
 
 @Resolver(User)
 export class UserResolver {
+
+  @Authorized()
   @Query(() => User)
   user(
     @Ctx() ctx: Context
