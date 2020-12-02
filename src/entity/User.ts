@@ -1,6 +1,5 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { v4 } from 'uuid';
-import * as bcrypt from 'bcryptjs';
 
 import {
   IsEmail,
@@ -16,7 +15,8 @@ import {
   UpdateDateColumn,
   BeforeInsert
 } from 'typeorm';
-import { hashPassword } from 'utils/';
+
+import { hashPassword } from '../utils';
 
 @ObjectType()
 @Entity()
