@@ -3,6 +3,11 @@ import { v4 } from 'uuid';
 import * as bcrypt from 'bcryptjs';
 
 import {
+  IsEmail,
+  MinLength
+} from 'class-validator';
+
+import {
   BaseEntity,
   Column,
   CreateDateColumn,
@@ -11,6 +16,7 @@ import {
   UpdateDateColumn,
   BeforeInsert
 } from 'typeorm';
+import { hashPassword } from 'utils/';
 
 @ObjectType()
 @Entity()
@@ -21,17 +27,21 @@ export default class User extends BaseEntity {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  firstName: string;
+  firstName?: string;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  lastName: string;
+  lastName?: string;
 
   @Column({ nullable: false })
   @Field({ nullable: false })
+  @IsEmail()
   email: string;
 
   @Column({ nullable: false })
+  @MinLength(6, {
+    message: 'Password is too short',
+  })
   password: string;
 
   @Field()
@@ -49,8 +59,10 @@ export default class User extends BaseEntity {
   @BeforeInsert()
 	addId() {
 		this.id = v4();
-	}
+  }
+  
+  @BeforeInsert()
 	async hashPassword() {
-		this.password = await bcrypt.hash(this.password, 10);
+    this.password = await hashPassword(this.password);
 	}
 }
