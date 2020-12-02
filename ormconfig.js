@@ -12,7 +12,7 @@ const dbUrl = isTest ? DATABASE_URL_TEST : DATABASE_URL;
 // Type ORM thing. Looks at entities and creates schema for the database
 // Do NOT set this to true in prod
 const synchronize = isTest;
-const migrationsRun = false;
+const migrationsRun = true;
 
 module.exports = {
   type: 'postgres',
