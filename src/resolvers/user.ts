@@ -5,22 +5,30 @@ import {
   Mutation,
   Ctx,
   Authorized,
+  FieldResolver,
+  Root,
 } from 'type-graphql';
 import { Context, LoginInput, SignupInput } from '../types';
 import { createToken, isPassword } from '../utils'
 import { validate } from "class-validator";
 
 import User from '../entity/User';
+import Smoothie from '../entity/Smoothie';
 
 @Resolver(User)
 export class UserResolver {
-
   @Authorized()
   @Query(() => User)
-  user(
+  async user(
     @Ctx() ctx: Context
   ): Promise<User | undefined> { 
-        return User.findOne({email: 'mitchell@demarcosoftware.com'})
+    const { email } = ctx;
+    return User.findOne({ email }, { relations: ['smoothies']});
+  }
+
+  @FieldResolver(() => [Smoothie])
+  async smoothies(@Root() user: User): Promise<Smoothie[]> {
+    return user.smoothies || []
   }
 
   @Mutation(() => User)
@@ -62,8 +70,6 @@ export class UserResolver {
     });
 
     let loggedIn = await isPassword(data.password, existingUser)
-
-    console.log({loggedIn})
 
     if (loggedIn && existingUser) {
       return createToken(existingUser)

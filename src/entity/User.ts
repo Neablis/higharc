@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { v4 } from 'uuid';
+import Smoothie from './Smoothie';
 
 import {
   IsEmail,
@@ -13,7 +14,8 @@ import {
   Entity,
   PrimaryColumn,
   UpdateDateColumn,
-  BeforeInsert
+  BeforeInsert,
+  OneToMany
 } from 'typeorm';
 
 import { hashPassword } from '../utils';
@@ -43,6 +45,9 @@ export default class User extends BaseEntity {
     message: 'Password is too short',
   })
   password: string;
+
+  @OneToMany(() => Smoothie, (smoothie) => smoothie.user)
+  smoothies: Smoothie[];
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })

@@ -32,12 +32,10 @@ export default class Ingredient extends BaseEntity {
   })
   name: string;
 
-  @ManyToOne(() => Smoothie, (smoothie) => smoothie.ingredient, {
+  @ManyToOne(() => Smoothie, (smoothie) => smoothie.ingredients, {
     nullable: false,
     eager: true,
   })
-  @JoinColumn({ name: 'id' })
-  @Index()
   smoothie: Smoothie;
 
   @Column({ nullable: false })
@@ -45,7 +43,7 @@ export default class Ingredient extends BaseEntity {
   @IsInt()
   @Min(0)
   @Max(100)
-  quantity: string;
+  quantity: number;
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })

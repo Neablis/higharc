@@ -10,7 +10,8 @@ export const createToken = (user: User): string => {
     var token = jwt.sign({
         exp: ONE_HOUR,
         email: user.email,
-        admin: user.isAdmin
+        admin: user.isAdmin,
+        userId: user.id
     }, process.env.SECRET);
 
     return token;

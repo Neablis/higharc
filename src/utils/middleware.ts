@@ -21,6 +21,7 @@ export const authMiddleware = async (
 
     req['email'] = parsedToken?.email;
     req['admin'] = parsedToken?.admin;
+    req['userId'] = parsedToken?.userId;
 
   } catch (err) {
     console.error(err);

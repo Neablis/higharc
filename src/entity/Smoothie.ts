@@ -13,14 +13,16 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
   BeforeInsert,
-  OneToMany
+  OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import Ingredient from './Ingredient';
+import User from './User';
 
 
 @ObjectType()
 @Entity()
-export default class Smoothies extends BaseEntity {
+export default class Smoothie extends BaseEntity {
   @Field(() => ID)
   @PrimaryColumn()
   id: string;
@@ -33,7 +35,13 @@ export default class Smoothies extends BaseEntity {
   name: string;
 
   @OneToMany(() => Ingredient, (ingredient) => ingredient.smoothie)
-  ingredient: Ingredient[];
+  ingredients: Ingredient[];
+
+  @ManyToOne(() => User, (user) => user.smoothies, {
+    nullable: false,
+    eager: true,
+  })
+  user: User;
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })
