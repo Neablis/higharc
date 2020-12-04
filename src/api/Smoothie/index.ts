@@ -1,10 +1,16 @@
 import { Router } from 'express';
-const router = Router()
+import ingredient from "../Ingredient"
+const router = Router();
 
 const name = `Smoothie`
-const UserRouter = Router();
+const SmoothieRouter = Router();
 
-UserRouter.route('/')
-    .get(async (req, resp) => resp.send(name))
+SmoothieRouter.use('/:smoothieId/ingredients', ingredient);
 
-export default UserRouter;
+SmoothieRouter.route('/')
+    .get(async (req, resp) => {
+        console.log({ params: req.params })
+        return resp.send(name);
+    })
+
+export default SmoothieRouter;

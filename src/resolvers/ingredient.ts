@@ -59,20 +59,20 @@ import {
         }
 
         return ingredient;
-    };
+    }
 
     @Authorized()
     @Mutation(() => Boolean, { description: "Delete the ingredient" })
     async deleteIngredient(
       @Arg("id", { nullable: false, description: "ID of the ingredient you want to delete" }) id: string,
       @Ctx() ctx: Context
-    ): Promise<Boolean> {
+    ): Promise<boolean> {
   
         await Ingredient.delete({
             id
         });
 
         return true;
-    };
+    }
   }
     

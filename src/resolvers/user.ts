@@ -70,7 +70,7 @@ export class UserResolver {
       }
     });
 
-    let loggedIn = await isPassword(data.password, existingUser)
+    const loggedIn = await isPassword(data.password, existingUser)
 
     if (loggedIn && existingUser) {
       return createToken(existingUser)

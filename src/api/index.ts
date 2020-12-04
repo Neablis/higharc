@@ -1,13 +1,12 @@
 import { NextFunction, Response, Request, Router } from "express";
 import user from './User';
 import smoothie from './Smoothie';
-import ingredient from './Ingredient'
 
 export default (app) => {
     const mainRouter = Router();
     mainRouter.use('/user', user);
     mainRouter.use('/smoothie', smoothie);
-    mainRouter.use('/ingredient', ingredient);
+
     mainRouter.get('/', async (req, resp) => resp.send('Nothing to see. Move along.'));
 
     // Error handler route
@@ -19,5 +18,5 @@ export default (app) => {
         }
     );
 
-    app.use(mainRouter)
+    app.use(mainRouter);
 };

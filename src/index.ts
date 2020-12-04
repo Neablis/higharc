@@ -10,7 +10,7 @@ import { createConnection } from 'typeorm';
 
 import router from './api';
 
-import { authMiddleware, ErrorInterceptor, authChecker } from './utils';
+import { authMiddleware, ErrorInterceptor, authChecker, logging } from './utils';
 
 /** Create app */
 const app = express();
@@ -24,6 +24,7 @@ const root = '/';
 // TODO make this secure in production
 app.use(bodyParser.json());
 app.use(root, authMiddleware);
+app.use(root, logging);
 
 router(app);
 

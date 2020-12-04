@@ -10,8 +10,11 @@
     "@babel/preset-typescript": "^7.12.7",
     "@types/jest": "^26.0.15",
     "@types/node": "^14.14.10",
+    "@typescript-eslint/eslint-plugin": "^4.9.0",
+    "@typescript-eslint/parser": "^4.9.0",
     "babel-plugin-module-resolver": "^4.0.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.1",
+    "eslint": "^7.14.0",
     "graphql-markdown": "^5.2.0",
     "jest": "^26.6.3",
     "nodemon": "^2.0.6",
@@ -29,7 +32,7 @@
     "migration:generate": "npx typeorm migration:generate",
     "migration:run": "npx typeorm migration:run",
     "migration:revert": "npx typeorm migration:revert",
-    "generate:schemadoc": "graphql-markdown --title 'Higharc Smoothie API' --prologue 'Description of the API' http://localhost:5000/graphql > README.md"
+    "lint": "eslint . --ext .ts --fix"
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.12.1",

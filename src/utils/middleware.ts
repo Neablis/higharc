@@ -16,7 +16,7 @@ export const authMiddleware = async (
     const [, token] = bearerHeader?.split(' ') || [];
     if (!token) next();
 
-    let parsedToken = parseToken(token)
+    const parsedToken = parseToken(token)
 
     req['email'] = parsedToken?.email;
     req['admin'] = parsedToken?.admin;
@@ -26,6 +26,15 @@ export const authMiddleware = async (
     console.error(err);
     err
   }
+  next();
+};
+
+export const logging = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  console.log(`${(new Date()).toTimeString()} ${req.method} ${req.originalUrl}`)
   next();
 };
 

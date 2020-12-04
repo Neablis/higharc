@@ -7,7 +7,7 @@ const SALT_ROUNDS = 10;
 const ONE_HOUR = Math.floor(Date.now() / 1000) + (60 * 60)
 
 export const createToken = (user: User): string => {
-    var token = jwt.sign({
+    const token = jwt.sign({
         exp: ONE_HOUR,
         email: user.email,
         admin: user.isAdmin,
@@ -18,7 +18,7 @@ export const createToken = (user: User): string => {
 }
 
 export const parseToken = (token: string): Token | null => {
-    var decoded = jwt.verify(token, process.env.SECRET);
+    const decoded = jwt.verify(token, process.env.SECRET);
 
     return decoded;
 }

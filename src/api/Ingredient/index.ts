@@ -2,9 +2,9 @@ import { Router } from 'express';
 const router = Router()
 
 const name = `Ingredient`
-const UserRouter = Router();
+const IngredientRouter = Router();
 
-UserRouter.route('/')
+IngredientRouter.route('/')
     .get(async (req, resp) => resp.send(name))
 
-export default UserRouter;
+export default IngredientRouter;

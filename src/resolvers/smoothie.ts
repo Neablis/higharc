@@ -65,7 +65,7 @@ export class SmoothieResolver {
     })
 
     return true;
-  };
+  }
 
   @Authorized()
   @Mutation(() => Smoothie, { description: "Update the name of one of your smoothies" })
@@ -78,7 +78,7 @@ export class SmoothieResolver {
 
     if (!user) throw new Error('User doesnt exist')
 
-    let smoothie = await Smoothie.findOne({
+    const smoothie = await Smoothie.findOne({
       name: recipeName,
       user
     }, {
@@ -93,7 +93,7 @@ export class SmoothieResolver {
     smoothie.save();
 
     return smoothie;
-  };
+  }
 
   @Authorized()
   @Mutation(() => Smoothie, { description: "Create a new smoothie" })
@@ -117,8 +117,8 @@ export class SmoothieResolver {
     } else {
       const connection = getConnection();
       const response = await connection.manager.save(Smoothie, smoothie)
-      let ingredientsData = smoothieData.ingredients || []
-      let smoothieIngredients:Ingredient[] = []
+      const ingredientsData = smoothieData.ingredients || []
+      const smoothieIngredients:Ingredient[] = []
 
       for (let x = 0; x < ingredientsData.length; x ++) {
         const ingredientData = ingredientsData[x];
