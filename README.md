@@ -53,7 +53,7 @@ Get the user for the passed authentication token
 <td valign="top"><a href="#string">String</a>!</td>
 <td>
 
-Get a auth token if user/password is correct
+Get a valid auth token if user/password is correct
 
 </td>
 </tr>
@@ -115,10 +115,10 @@ Get the ingredient by ID
 <tbody>
 <tr>
 <td colspan="2" valign="top"><strong>signup</strong></td>
-<td valign="top"><a href="#user">User</a>!</td>
+<td valign="top"><a href="#string">String</a>!</td>
 <td>
 
-Create a new user
+Create a new user and returns a valid login token
 
 </td>
 </tr>
