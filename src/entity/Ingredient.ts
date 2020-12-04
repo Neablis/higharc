@@ -1,7 +1,7 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import { v4 } from 'uuid';
 
-import { MinLength, IsInt, Min, Max} from "class-validator";
+import { MinLength, IsInt, Min, Max, IsEnum } from "class-validator";
 
 import {
   BaseEntity,
@@ -11,12 +11,21 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
   BeforeInsert,
-  JoinColumn,
-  Index,
   ManyToOne
 } from 'typeorm';
 import Smoothie from './Smoothie';
 
+export enum IngredientUnit {
+  CUP = "cup",
+  PINCH = "pinch",
+  GRAM = "gram",
+  OUNCE = "ounce",
+}
+
+registerEnumType(IngredientUnit, {
+  name: "IngredientUnits", // this one is mandatory
+  description: "Possible Units for a ingredient", // this one is optional
+});
 
 @ObjectType()
 @Entity()
@@ -35,6 +44,7 @@ export default class Ingredient extends BaseEntity {
   @ManyToOne(() => Smoothie, (smoothie) => smoothie.ingredients, {
     nullable: false,
     eager: true,
+    onDelete: 'CASCADE'
   })
   smoothie: Smoothie;
 
@@ -44,6 +54,15 @@ export default class Ingredient extends BaseEntity {
   @Min(0)
   @Max(100)
   quantity: number;
+
+  @Column({
+    type: "enum",
+    enum: IngredientUnit,
+    nullable: false
+  })
+  @Field(() => IngredientUnit, { nullable: false })
+  @IsEnum(IngredientUnit)
+  unit: IngredientUnit
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })

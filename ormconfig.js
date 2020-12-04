@@ -19,6 +19,7 @@ module.exports = {
   url: dbUrl,
   synchronize,
   migrationsRun,
+  dropSchema: isTest,
   logging: isProduction ? true : false,
   entities: ['lib/entity/**/*.js'],
   migrations: ['lib/migration/**/*.js'],

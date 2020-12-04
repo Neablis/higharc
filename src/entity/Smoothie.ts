@@ -15,6 +15,7 @@ import {
   BeforeInsert,
   OneToMany,
   ManyToOne,
+  Index,
 } from 'typeorm';
 import Ingredient from './Ingredient';
 import User from './User';
@@ -32,14 +33,17 @@ export default class Smoothie extends BaseEntity {
   @MinLength(3, {
     message: 'Name is too short',
   })
+  @Index({ unique: true })
   name: string;
 
   @OneToMany(() => Ingredient, (ingredient) => ingredient.smoothie)
   ingredients: Ingredient[];
 
   @ManyToOne(() => User, (user) => user.smoothies, {
-    nullable: false,
+    nullable: true,
     eager: true,
+    cascade: ['insert'],
+    onDelete:'CASCADE'
   })
   user: User;
 

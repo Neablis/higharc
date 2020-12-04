@@ -1,5 +1,4 @@
-import Ingredient from 'entity/Ingredient';
-import Smoothie from 'entity/Smoothie';
+import { IngredientUnit } from '../entity/Ingredient';
 import { InputType, Field } from 'type-graphql';
 
 @InputType()
@@ -12,10 +11,13 @@ export class SmoothieInput {
 }
 
 @InputType()
-export class IngredientInput implements Partial<Ingredient> {
-  @Field()
+export class IngredientInput {
+  @Field({nullable: false})
   name: string;
 
-  @Field()
+  @Field({nullable: false})
   quantity: number;
+
+  @Field({nullable: false})
+  unit: IngredientUnit;
 }

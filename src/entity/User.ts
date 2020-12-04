@@ -15,7 +15,8 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
   BeforeInsert,
-  OneToMany
+  OneToMany,
+  Index
 } from 'typeorm';
 
 import { hashPassword } from '../utils';
@@ -37,6 +38,7 @@ export default class User extends BaseEntity {
 
   @Column({ nullable: false })
   @Field({ nullable: false })
+  @Index({ unique: true })
   @IsEmail()
   email: string;
 

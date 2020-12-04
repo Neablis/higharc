@@ -23,7 +23,7 @@ export class UserResolver {
     @Ctx() ctx: Context
   ): Promise<User | undefined> { 
     const { email } = ctx;
-    return User.findOne({ email }, { relations: ['smoothies']});
+    return User.findOne({ email }, { relations: ['smoothies', 'smoothies.ingredients']});
   }
 
   @FieldResolver(() => [Smoothie])
