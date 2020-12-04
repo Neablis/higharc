@@ -31,17 +31,17 @@ export class UserResolver {
     return user.smoothies || []
   }
 
-  @Mutation(() => User, { description: "Create a new user" })
+  @Mutation(() => String, { description: "Create a new user and returns a valid login token" })
   async signup(
     @Arg('data') data: SignupInput,
-  ): Promise<User | undefined> {
+  ): Promise<string | undefined> {
     const existingUser = await User.findOne({ 
       where: {  
         email: data.email
       }
     });
 
-    if (existingUser) return existingUser;
+    if (existingUser) throw new Error('Email is already taken')
 
     const user = new User();
     user.email = data.email;
@@ -55,11 +55,12 @@ export class UserResolver {
     if (errors.length > 0) {
       throw new Error('Error creating new user'); 
     } else {
-      return user.save();
+      await user.save();
+      return createToken(user)
     }
   }
 
-  @Query(() => String, { description: "Get a auth token if user/password is correct" })
+  @Query(() => String, { description: "Get a valid auth token if user/password is correct" })
   async login(
     @Arg('data') data: LoginInput,
   ): Promise<string | void> {
