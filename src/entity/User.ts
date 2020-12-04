@@ -24,20 +24,20 @@ import { hashPassword } from '../utils';
 @ObjectType()
 @Entity()
 export default class User extends BaseEntity {
-  @Field(() => ID)
+  @Field(() => ID, { description: 'Unique identifier of the User' })
   @PrimaryColumn()
   id: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: 'Users first name' })
   @Column({ nullable: true })
   firstName?: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: 'Users last name' })
   @Column({ nullable: true })
   lastName?: string;
 
   @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Field({ nullable: false, description: 'Users email address' })
   @Index({ unique: true })
   @IsEmail()
   email: string;
@@ -51,17 +51,17 @@ export default class User extends BaseEntity {
   @OneToMany(() => Smoothie, (smoothie) => smoothie.user)
   smoothies: Smoothie[];
 
-  @Field()
+  @Field({ description: 'Users role (only admin exists)' })
+  @Column({ default: false })
+  isAdmin: boolean;
+
+  @Field({ description: 'Date Created' })
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @Field()
+  @Field({ description: 'Date Last Updated' })
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
-
-  @Field()
-  @Column({ default: false })
-  isAdmin: boolean;
 
   @BeforeInsert()
 	addId() {

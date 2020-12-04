@@ -30,12 +30,12 @@ registerEnumType(IngredientUnit, {
 @ObjectType()
 @Entity()
 export default class Ingredient extends BaseEntity {
-  @Field(() => ID)
+  @Field(() => ID, { description: 'Unique identifier of the ingredient' })
   @PrimaryColumn()
   id: string;
 
   @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Field({ nullable: false, description: 'Name of the ingredient' })
   @MinLength(3, {
     message: 'Name is too short',
   })
@@ -44,12 +44,12 @@ export default class Ingredient extends BaseEntity {
   @ManyToOne(() => Smoothie, (smoothie) => smoothie.ingredients, {
     nullable: false,
     eager: true,
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   smoothie: Smoothie;
 
   @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Field({ nullable: false, description: 'How many of the ingredient for recipe' })
   @IsInt()
   @Min(0)
   @Max(100)
@@ -60,15 +60,15 @@ export default class Ingredient extends BaseEntity {
     enum: IngredientUnit,
     nullable: false
   })
-  @Field(() => IngredientUnit, { nullable: false })
+  @Field(() => IngredientUnit, { nullable: false, description: 'Units for the quantity of the ingredient'})
   @IsEnum(IngredientUnit)
   unit: IngredientUnit
 
-  @Field()
+  @Field({ description: 'Date Created' })
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @Field()
+  @Field({ description: 'Date Last Updated' })
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 

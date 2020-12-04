@@ -2,28 +2,22 @@ import { InputType, Field } from 'type-graphql';
 import User from '../entity/User';
 
 @InputType()
-export class SignupInput implements Partial<User> {
-  @Field({ nullable: true })
-  firstName?: string;
-
-  @Field({ nullable: true })
-  lastName?: string;
-
-  @Field({ nullable: false })
+export class LoginInput {
+  @Field({ nullable: false, description: "Users email address" })
   email: string;
 
-  @Field({ nullable: false })
+  @Field({ nullable: false, description: "Users password (must be greater than 6 characters)" })
   password: string;
-
-  @Field({ nullable: true })
-  isAdmin?: boolean;
 }
 
 @InputType()
-export class LoginInput {
-  @Field({ nullable: false })
-  email: string;
+export class SignupInput extends LoginInput implements Partial<User>  {
+  @Field({ nullable: true, description: "Users first name" })
+  firstName?: string;
 
-  @Field({ nullable: false })
-  password: string;
+  @Field({ nullable: true, description: "Users last name" })
+  lastName?: string;
+
+  @Field({ nullable: true, description: "Flag to create an admin user" })
+  isAdmin?: boolean;
 }

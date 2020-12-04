@@ -12,7 +12,8 @@ import { createConnection } from 'typeorm';
 
 import {
   UserResolver,
-  SmoothieResolver
+  SmoothieResolver,
+  IngredientResolver
 } from './resolvers';
 
 import router from './routes';
@@ -44,7 +45,8 @@ createConnection()
     const schema = await buildSchema({
       resolvers: [
         UserResolver,
-        SmoothieResolver
+        SmoothieResolver,
+        IngredientResolver
       ],
       authChecker,
       globalMiddlewares: [ErrorInterceptor],

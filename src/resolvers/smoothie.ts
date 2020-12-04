@@ -22,7 +22,7 @@ import { getConnection } from 'typeorm';
 @Resolver(Smoothie)
 export class SmoothieResolver {
   @Authorized()
-  @Query(() => Smoothie, { nullable: true })
+  @Query(() => Smoothie, { nullable: true, description: "Get a smoothie you created by its name" })
   async smoothie(
     @Arg("name", { nullable: false }) name: string,
     @Ctx() ctx: Context
@@ -37,7 +37,7 @@ export class SmoothieResolver {
   }
 
   @Authorized()
-  @Query(() => [Smoothie], { nullable: true })
+  @Query(() => [Smoothie], { nullable: true, description: "Get all smoothies you made" })
   async smoothies(
     @Ctx() ctx: Context
   ): Promise<Smoothie[] | undefined> {
@@ -50,7 +50,7 @@ export class SmoothieResolver {
   }
 
   @Authorized()
-  @Mutation(() => Boolean)
+  @Mutation(() => Boolean, { description: "Delete a smoothie you created by its name" })
   async deleteRecipe(
     @Arg("name", { nullable: false }) name: string,
     @Ctx() ctx: Context
@@ -68,7 +68,35 @@ export class SmoothieResolver {
   };
 
   @Authorized()
-  @Mutation(() => Smoothie)
+  @Mutation(() => Smoothie, { description: "Update the name of one of your smoothies" })
+  async modifyRecipe(
+    @Arg("recipeName", { nullable: false }) recipeName: string,
+    @Arg("name", { nullable: false }) name: string,
+    @Ctx() ctx: Context
+  ): Promise<Smoothie> {
+    const user = await User.findOne({email: ctx.email});
+
+    if (!user) throw new Error('User doesnt exist')
+
+    let smoothie = await Smoothie.findOne({
+      name: recipeName,
+      user
+    }, {
+      relations: ['ingredients']
+    })
+
+    if (!smoothie) {
+      throw new Error('Recipe doesnt exist')
+    }
+
+    smoothie.name = name;
+    smoothie.save();
+
+    return smoothie;
+  };
+
+  @Authorized()
+  @Mutation(() => Smoothie, { description: "Create a new smoothie" })
   async addRecipe(
     @Arg("data") smoothieData: SmoothieInput, 
     @Ctx() ctx: Context

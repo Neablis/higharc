@@ -24,12 +24,12 @@ import User from './User';
 @ObjectType()
 @Entity()
 export default class Smoothie extends BaseEntity {
-  @Field(() => ID)
+  @Field(() => ID, { description: 'Unique identifier of the recipe' })
   @PrimaryColumn()
   id: string;
 
   @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Field({ nullable: false, description: "Name of the recipe (must be longer than 3 characters)" })
   @MinLength(3, {
     message: 'Name is too short',
   })
@@ -47,11 +47,11 @@ export default class Smoothie extends BaseEntity {
   })
   user: User;
 
-  @Field()
+  @Field({ description: 'Date Created' })
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @Field()
+  @Field({ description: 'Date Last Updated' })
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 

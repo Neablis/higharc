@@ -18,7 +18,7 @@ import Smoothie from '../entity/Smoothie';
 @Resolver(User)
 export class UserResolver {
   @Authorized()
-  @Query(() => User)
+  @Query(() => User, { description: "Get the user for the passed authentication token" })
   async user(
     @Ctx() ctx: Context
   ): Promise<User | undefined> { 
@@ -31,7 +31,7 @@ export class UserResolver {
     return user.smoothies || []
   }
 
-  @Mutation(() => User)
+  @Mutation(() => User, { description: "Create a new user" })
   async signup(
     @Arg('data') data: SignupInput,
   ): Promise<User | undefined> {
@@ -59,7 +59,7 @@ export class UserResolver {
     }
   }
 
-  @Query(() => String)
+  @Query(() => String, { description: "Get a auth token if user/password is correct" })
   async login(
     @Arg('data') data: LoginInput,
   ): Promise<string | void> {
