@@ -1,6 +1,5 @@
 import { Response, Request, NextFunction } from 'express';
 import { MiddlewareFn, AuthChecker } from 'type-graphql';
-import User from 'entity/User';
 
 import { Context, Token } from '../types';
 import { parseToken } from './auth';
@@ -45,7 +44,7 @@ export const ErrorInterceptor: MiddlewareFn<any> = async (_, next) => {
 export const authChecker: AuthChecker<Context> = (
   { root, args, context: { email, admin } },
   roles
-) => {  
+) => {
   if (roles.length === 0) return email !== undefined;
 
   // and if no user, restrict access
@@ -62,4 +61,3 @@ export const authChecker: AuthChecker<Context> = (
   // no roles matched, restrict access
   return false;
 };
-  
