@@ -29,7 +29,7 @@
     "migration:generate": "npx typeorm migration:generate",
     "migration:run": "npx typeorm migration:run",
     "migration:revert": "npx typeorm migration:revert",
-    "generate:schemadoc": "graphql-markdown --title 'Higharc Smoothie API' --prologue 'Description of the API' http://localhost:5000/graphql > readme.md"
+    "generate:schemadoc": "graphql-markdown --title 'Higharc Smoothie API' --prologue 'Description of the API' http://localhost:5000/graphql > README.md"
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.12.1",
