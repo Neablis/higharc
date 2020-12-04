@@ -24,7 +24,7 @@ export class SmoothieResolver {
   @Authorized()
   @Query(() => Smoothie, { nullable: true, description: "Get a smoothie you created by its name" })
   async smoothie(
-    @Arg("name", { nullable: false }) name: string,
+    @Arg("name", { nullable: false, description: "Name of one of your smoothies you want to find" }) name: string,
     @Ctx() ctx: Context
   ): Promise<Smoothie | undefined> {
     return Smoothie.findOne({
@@ -52,7 +52,7 @@ export class SmoothieResolver {
   @Authorized()
   @Mutation(() => Boolean, { description: "Delete a smoothie you created by its name" })
   async deleteRecipe(
-    @Arg("name", { nullable: false }) name: string,
+    @Arg("name", { nullable: false, description: "Name of the smoothie you want to delete" }) name: string,
     @Ctx() ctx: Context
   ): Promise<boolean> {
     const user = await User.findOne({email: ctx.email});
@@ -70,8 +70,8 @@ export class SmoothieResolver {
   @Authorized()
   @Mutation(() => Smoothie, { description: "Update the name of one of your smoothies" })
   async modifyRecipe(
-    @Arg("recipeName", { nullable: false }) recipeName: string,
-    @Arg("name", { nullable: false }) name: string,
+    @Arg("recipeName", { nullable: false, description: "Name of the recipe you want to update" }) recipeName: string,
+    @Arg("name", { nullable: false, description: "New name of the recipe" }) name: string,
     @Ctx() ctx: Context
   ): Promise<Smoothie> {
     const user = await User.findOne({email: ctx.email});
@@ -98,7 +98,7 @@ export class SmoothieResolver {
   @Authorized()
   @Mutation(() => Smoothie, { description: "Create a new smoothie" })
   async addRecipe(
-    @Arg("data") smoothieData: SmoothieInput, 
+    @Arg("data", {description: "Input data for the new recipe you are creating"}) smoothieData: SmoothieInput, 
     @Ctx() ctx: Context
   ): Promise<Smoothie> {
     const user = await User.findOne({email: ctx.email});

@@ -60,7 +60,11 @@ Get a valid auth token if user/password is correct
 <tr>
 <td colspan="2" align="right" valign="top">data</td>
 <td valign="top"><a href="#logininput">LoginInput</a>!</td>
-<td></td>
+<td>
+
+Email and password of the user you are logging in as
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>smoothie</strong></td>
@@ -74,7 +78,11 @@ Get a smoothie you created by its name
 <tr>
 <td colspan="2" align="right" valign="top">name</td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+Name of one of your smoothies you want to find
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>smoothies</strong></td>
@@ -97,7 +105,11 @@ Get the ingredient by ID
 <tr>
 <td colspan="2" align="right" valign="top">id</td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+ID of the ingredient you want to get
+
+</td>
 </tr>
 </tbody>
 </table>
@@ -125,7 +137,11 @@ Create a new user and returns a valid login token
 <tr>
 <td colspan="2" align="right" valign="top">data</td>
 <td valign="top"><a href="#signupinput">SignupInput</a>!</td>
-<td></td>
+<td>
+
+Data for the user you are trying to create
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>deleteRecipe</strong></td>
@@ -139,7 +155,11 @@ Delete a smoothie you created by its name
 <tr>
 <td colspan="2" align="right" valign="top">name</td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+Name of the smoothie you want to delete
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>modifyRecipe</strong></td>
@@ -153,12 +173,20 @@ Update the name of one of your smoothies
 <tr>
 <td colspan="2" align="right" valign="top">name</td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+New name of the recipe
+
+</td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">recipeName</td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+Name of the recipe you want to update
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>addRecipe</strong></td>
@@ -172,7 +200,11 @@ Create a new smoothie
 <tr>
 <td colspan="2" align="right" valign="top">data</td>
 <td valign="top"><a href="#smoothieinput">SmoothieInput</a>!</td>
-<td></td>
+<td>
+
+Input data for the new recipe you are creating
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>updateIngredient</strong></td>
@@ -186,12 +218,20 @@ Update the ingredient by its ID
 <tr>
 <td colspan="2" align="right" valign="top">updates</td>
 <td valign="top"><a href="#ingredientupdateinput">IngredientUpdateInput</a>!</td>
-<td></td>
+<td>
+
+Updates to the ingredient
+
+</td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">id</td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+ID of the ingredient you want to update
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>deleteIngredient</strong></td>
@@ -205,7 +245,11 @@ Delete the ingredient
 <tr>
 <td colspan="2" align="right" valign="top">id</td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+ID of the ingredient you want to delete
+
+</td>
 </tr>
 </tbody>
 </table>

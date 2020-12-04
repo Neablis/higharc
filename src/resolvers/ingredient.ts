@@ -20,7 +20,7 @@ import {
     @Authorized()
     @Query(() => Ingredient, { nullable: true, description: "Get the ingredient by ID" })
     async ingredient(
-      @Arg("id", { nullable: false }) id: string,
+      @Arg("id", { nullable: false, description: "ID of the ingredient you want to get" }) id: string,
       @Ctx() ctx: Context
     ): Promise<Ingredient | undefined> {
       return Ingredient.findOne({
@@ -33,8 +33,8 @@ import {
     @Authorized()
     @Mutation(() => Ingredient, { description: "Update the ingredient by its ID" })
     async updateIngredient(
-      @Arg("id", { nullable: false }) id: string,
-      @Arg("updates",{ nullable: false }) updates: IngredientUpdateInput,
+      @Arg("id", { nullable: false, description: "ID of the ingredient you want to update" }) id: string,
+      @Arg("updates",{ nullable: false, description: "Updates to the ingredient" }) updates: IngredientUpdateInput,
       @Ctx() ctx: Context
     ): Promise<Ingredient> {
   
@@ -64,7 +64,7 @@ import {
     @Authorized()
     @Mutation(() => Boolean, { description: "Delete the ingredient" })
     async deleteIngredient(
-      @Arg("id", { nullable: false }) id: string,
+      @Arg("id", { nullable: false, description: "ID of the ingredient you want to delete" }) id: string,
       @Ctx() ctx: Context
     ): Promise<Boolean> {
   

@@ -33,7 +33,7 @@ export class UserResolver {
 
   @Mutation(() => String, { description: "Create a new user and returns a valid login token" })
   async signup(
-    @Arg('data') data: SignupInput,
+    @Arg('data', { description: "Data for the user you are trying to create"}) data: SignupInput,
   ): Promise<string | undefined> {
     const existingUser = await User.findOne({ 
       where: {  
@@ -62,7 +62,7 @@ export class UserResolver {
 
   @Query(() => String, { description: "Get a valid auth token if user/password is correct" })
   async login(
-    @Arg('data') data: LoginInput,
+    @Arg('data', { description: "Email and password of the user you are logging in as"}) data: LoginInput,
   ): Promise<string | void> {
     const existingUser = await User.findOne({ 
       where: {  
