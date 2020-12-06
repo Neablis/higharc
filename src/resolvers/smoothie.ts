@@ -17,7 +17,6 @@ import Ingredient from '../entity/Ingredient';
 import { SmoothieInput } from '../types/smoothie';
 import User from '../entity/User';
 import { getConnection } from 'typeorm';
-
   
 @Resolver(Smoothie)
 export class SmoothieResolver {

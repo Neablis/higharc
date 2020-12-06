@@ -16,57 +16,61 @@ export const authMiddleware = async (
     const [, token] = bearerHeader?.split(' ') || [];
     if (!token) next();
 
-    const parsedToken = parseToken(token)
+    const parsedToken: Token = parseToken(token)
 
-    req['email'] = parsedToken?.email;
-    req['admin'] = parsedToken?.admin;
-    req['userId'] = parsedToken?.userId;
+    const context: Context = {
+      email: parsedToken.email,
+      admin: parsedToken.admin,
+      userId: parsedToken.userId
+    }
+
+    req.context = context;
 
   } catch (err) {
     console.error(err);
-    err
+    next(err)
   }
   next();
 };
 
-export const logging = async (
+export const logging = (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> => {
-  console.log(`${(new Date()).toTimeString()} ${req.method} ${req.originalUrl}`)
+): void => {
+  // console.info(`${(new Date()).toTimeString()} ${req.method} ${req.originalUrl}`)
   next();
 };
 
+export const errorHandler = (
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  console.log({ err })
+  res.status(500).send({ error: err })
+}
 
-export const ErrorInterceptor: MiddlewareFn<any> = async (_, next) => {
-  try {
-    return await next();
-  } catch (err) {
-    console.error(err);
-    // rethrow the error
-    throw err;
+export const isLoggedIn = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  if (!req.context) {
+    res.status(401)
+    res.send('User not logged in')
+  } else {
+    next();
   }
-};
+}
 
-// create auth checker function
-export const authChecker: AuthChecker<Context> = (
-  { root, args, context: { email, admin } },
-  roles
-) => {
-  if (roles.length === 0) return email !== undefined;
-
-  // and if no user, restrict access
-  if (!email) return false;
-
-  if (roles.length > 0 && roles.includes('admin')) {
-    if (admin) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  // no roles matched, restrict access
-  return false;
-};
+export const missingRoute = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  res.status(404).send({
+    error: 'Not found'
+  })
+}

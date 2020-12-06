@@ -4,6 +4,8 @@ import { v4 } from 'uuid';
 import {
   MinLength
 } from 'class-validator';
+import { Expose } from 'class-transformer';
+
 
 import {
   BaseEntity,
@@ -26,6 +28,7 @@ import User from './User';
 export default class Smoothie extends BaseEntity {
   @Field(() => ID, { description: 'Unique identifier of the recipe' })
   @PrimaryColumn()
+  @Expose()
   id: string;
 
   @Column({ nullable: false })
@@ -34,9 +37,11 @@ export default class Smoothie extends BaseEntity {
     message: 'Name is too short',
   })
   @Index({ unique: true })
+  @Expose()
   name: string;
 
   @OneToMany(() => Ingredient, (ingredient) => ingredient.smoothie)
+  @Expose()
   ingredients: Ingredient[];
 
   @ManyToOne(() => User, (user) => user.smoothies, {
@@ -49,10 +54,12 @@ export default class Smoothie extends BaseEntity {
 
   @Field({ description: 'Date Created' })
   @CreateDateColumn({ type: 'timestamp' })
+  @Expose()
   createdAt: Date;
 
   @Field({ description: 'Date Last Updated' })
   @UpdateDateColumn({ type: 'timestamp' })
+  @Expose()
   updatedAt: Date;
 
   @BeforeInsert()

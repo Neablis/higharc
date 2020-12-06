@@ -1,18 +1,17 @@
 import { IngredientUnit } from '../entity/Ingredient';
 
-export class SmoothieInput {
+export interface SmoothieInput {
   name: string;
-
   ingredients: [IngredientInput];
 }
 
-export class IngredientInput {
+export interface IngredientInput {
   name: string;
   quantity: number;
   unit: IngredientUnit;
 }
 
-export class IngredientUpdateInput {
+export interface IngredientUpdateInput {
   name: string;
   quantity: number;
   unit: IngredientUnit;

@@ -1,22 +1,16 @@
 import { NextFunction, Response, Request, Router } from "express";
 import user from './User';
 import smoothie from './Smoothie';
+import auth from './Auth';
 
 export default (app) => {
-    const mainRouter = Router();
-    mainRouter.use('/user', user);
-    mainRouter.use('/smoothie', smoothie);
+  const mainRouter = Router();
+  mainRouter.use('/user', user);
+  mainRouter.use('/auth', auth);
 
-    mainRouter.get('/', async (req, resp) => resp.send('Nothing to see. Move along.'));
+  mainRouter.use('/smoothie', smoothie);
 
-    // Error handler route
-    mainRouter.use(
-        // eslint-disable-next-line
-        async (err: Error, req: Request, res: Response, next: NextFunction) => {
-            console.error(err); // eslint-disable-line
-            return res.status(500).json({ message: err.message });
-        }
-    );
+  mainRouter.get('/', async (req, resp) => resp.send('Nothing to see. Move along.'));
 
-    app.use(mainRouter);
+  app.use(mainRouter);
 };

@@ -1,8 +1,8 @@
 export type Context = Pick<Token, 'email' | 'admin' | 'userId'>
 
 export interface Token {
-  exp: string;
+  exp: string | number;
   email: string;
-  admin: string;
+  admin: boolean;
   userId: string;
 }

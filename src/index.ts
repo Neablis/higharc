@@ -1,4 +1,3 @@
-/** Init env vars MUST BE FIRST */
 import 'reflect-metadata';
 import dotenv from "dotenv";
 
@@ -10,31 +9,32 @@ import { createConnection } from 'typeorm';
 
 import router from './api';
 
-import { authMiddleware, ErrorInterceptor, authChecker, logging } from './utils';
+import { authMiddleware, errorHandler, logging, missingRoute } from './utils';
 
 /** Create app */
 const app = express();
 
-/** Init Sentry */
 const appEnv = process.env.APP_ENV || 'development';
 
-/** Add middleware */
-const root = '/';
-
-// TODO make this secure in production
 app.use(bodyParser.json());
-app.use(root, authMiddleware);
-app.use(root, logging);
+app.use(authMiddleware);
+app.use(logging);
 
 router(app);
+
+app.use(missingRoute);
+
+app.use(errorHandler);
 
 /** Run server after connecting to DB */
 const port = process.env.PORT || 5000;
 
 createConnection()
-    .then(async () => {
-        console.log('DB READY');
+  .then(async () => {
+    console.log('DB READY');
 
-        app.listen(port, () => console.log(`Server listening on port ${port}`));
-    })
-    .catch((error) => console.log(error));
+    app.listen(port, () => console.log(`Server listening on port ${port}`));
+  })
+  .catch((error) => {
+    console.log({ error })
+  });

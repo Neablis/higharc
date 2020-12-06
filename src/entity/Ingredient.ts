@@ -13,7 +13,9 @@ import {
   BeforeInsert,
   ManyToOne
 } from 'typeorm';
+
 import Smoothie from './Smoothie';
+import { Expose } from 'class-transformer';
 
 export enum IngredientUnit {
   CUP = "cup",
@@ -32,6 +34,7 @@ registerEnumType(IngredientUnit, {
 export default class Ingredient extends BaseEntity {
   @Field(() => ID, { description: 'Unique identifier of the ingredient' })
   @PrimaryColumn()
+  @Expose()
   id: string;
 
   @Column({ nullable: false })
@@ -39,6 +42,7 @@ export default class Ingredient extends BaseEntity {
   @MinLength(3, {
     message: 'Name is too short',
   })
+  @Expose()
   name: string;
 
   @ManyToOne(() => Smoothie, (smoothie) => smoothie.ingredients, {
@@ -53,6 +57,7 @@ export default class Ingredient extends BaseEntity {
   @IsInt()
   @Min(0)
   @Max(100)
+  @Expose()
   quantity: number;
 
   @Column({
@@ -60,16 +65,19 @@ export default class Ingredient extends BaseEntity {
     enum: IngredientUnit,
     nullable: false
   })
-  @Field(() => IngredientUnit, { nullable: false, description: 'Units for the quantity of the ingredient'})
+  @Field(() => IngredientUnit, { nullable: false, description: 'Units for the quantity of the ingredient' })
   @IsEnum(IngredientUnit)
+  @Expose()
   unit: IngredientUnit
 
   @Field({ description: 'Date Created' })
   @CreateDateColumn({ type: 'timestamp' })
+  @Expose()
   createdAt: Date;
 
   @Field({ description: 'Date Last Updated' })
   @UpdateDateColumn({ type: 'timestamp' })
+  @Expose()
   updatedAt: Date;
 
   @BeforeInsert()

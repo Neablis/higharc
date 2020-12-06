@@ -20,7 +20,7 @@ module.exports = {
   synchronize,
   migrationsRun,
   dropSchema: isTest,
-  logging: isProduction ? true : false,
+  logging: ["query", "error"],
   entities: ['lib/entity/**/*.js'],
   migrations: ['lib/migration/**/*.js'],
   subscribers: ['lib/subscriber/**/*.js'],

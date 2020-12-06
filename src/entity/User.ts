@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { v4 } from 'uuid';
 import Smoothie from './Smoothie';
+import { Exclude } from 'class-transformer';
 
 import {
   IsEmail,
@@ -42,10 +43,11 @@ export default class User extends BaseEntity {
   @IsEmail()
   email: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, select: false })
   @MinLength(6, {
     message: 'Password is too short',
   })
+  @Exclude()
   password: string;
 
   @OneToMany(() => Smoothie, (smoothie) => smoothie.user)
@@ -64,12 +66,12 @@ export default class User extends BaseEntity {
   updatedAt: Date;
 
   @BeforeInsert()
-	addId() {
-		this.id = v4();
+  addId() {
+    this.id = v4();
   }
-  
+
   @BeforeInsert()
-	async hashPassword() {
+  async hashPassword() {
     this.password = await hashPassword(this.password);
-	}
+  }
 }
