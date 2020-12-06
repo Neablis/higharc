@@ -73,7 +73,9 @@ IngredientRouter.route("/")
     ingredient.name = ingredientInput.name;
     ingredient.quantity = ingredientInput.quantity;
     ingredient.unit = ingredientInput.unit;
-    ingredient.smoothie = smoothie;    
+    ingredient.smoothie = smoothie; 
+    
+    ingredient.save();
 
     resp.send(classToPlain(ingredient, { excludeExtraneousValues: true }));
   })
@@ -187,7 +189,7 @@ IngredientRouter.route("/:id")
         .execute();
 
       if (results.affected === 0) {
-        resp.status(404).send('Could not delete user')
+        resp.status(404).send('Could not delete ingredient')
       } else {
         resp.send(true);
       }

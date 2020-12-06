@@ -132,7 +132,7 @@ SmoothieRouter.route("/:id")
       .execute();
 
     if (results.affected === 0) {
-      resp.status(404).send('Could not delete user')
+      resp.status(404).send('Could not delete smoothie')
     } else {
       resp.send(true);
     }
