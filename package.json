@@ -49,6 +49,7 @@
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
     "type-graphql-filter": "^0.2.2",
-    "typeorm": "^0.2.29"
+    "typeorm": "^0.2.29",
+    "uuid": "^8.3.1"
   }
 }
