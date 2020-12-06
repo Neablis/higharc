@@ -1,7 +1,7 @@
-import { Field, ID, ObjectType, registerEnumType } from "type-graphql"
-import { v4 } from "uuid"
+import { Field, ID, ObjectType, registerEnumType } from "type-graphql";
+import { v4 } from "uuid";
 
-import { MinLength, IsInt, Min, Max, IsEnum } from "class-validator"
+import { MinLength, IsInt, Min, Max, IsEnum } from "class-validator";
 
 import {
   BaseEntity,
@@ -12,10 +12,10 @@ import {
   UpdateDateColumn,
   BeforeInsert,
   ManyToOne
-} from "typeorm"
+} from "typeorm";
 
-import Smoothie from "./Smoothie"
-import { Expose } from "class-transformer"
+import { Smoothie } from "./";
+import { Expose } from "class-transformer";
 
 export enum IngredientUnit {
   CUP = "cup",
@@ -27,11 +27,11 @@ export enum IngredientUnit {
 registerEnumType(IngredientUnit, {
   name: "IngredientUnits", // this one is mandatory
   description: "Possible Units for a ingredient", // this one is optional
-})
+});
 
 @ObjectType()
 @Entity()
-export default class Ingredient extends BaseEntity {
+export class Ingredient extends BaseEntity {
   @Field(() => ID, { description: "Unique identifier of the ingredient" })
   @PrimaryColumn()
   @Expose()

@@ -1,15 +1,11 @@
-import { validate } from "class-validator"
-import { classToPlain } from "class-transformer"
+import { classToPlain } from "class-transformer";
+import { Router } from "express";
 
-import { Router } from "express"
-import { getConnection } from "typeorm"
-
-import Smoothie from "../../entity/Smoothie"
-import { isLoggedIn, validateSmoothieInput } from "../../utils"
-import ingredient from "../Ingredient"
-import User from "../../entity/User"
-import Ingredient from "../../entity/Ingredient"
-import { SmoothieInput } from "types/smoothie"
+import { Smoothie, Ingredient, User } from "../../entity";
+import { isLoggedIn, validateSmoothieInput } from "../../utils";
+import ingredient from "../Ingredient";
+import { SmoothieInput } from "../../types/smoothie";
+import { smoothieService } from "../../services";
 
 const SmoothieRouter = Router()
 
@@ -28,142 +24,105 @@ SmoothieRouter.use(isLoggedIn)
 SmoothieRouter.route("/")
   .get(async (req, resp): Promise<void> => {
     const { userId } = req.context
-    const smoothies = await Smoothie.find({
-      where: {
-        user: userId
-      },
-      relations: ["ingredients"]
-    })
 
-    const serializedSmoothies = classToPlain(smoothies, { excludeExtraneousValues: true })
+    const smoothies = await smoothieService.getAllSmoothies(userId);
 
-    resp.send(serializedSmoothies)
+    const serializedSmoothies = classToPlain(smoothies, { excludeExtraneousValues: true });
+
+    resp.send(serializedSmoothies);
   })
   .post(async (req, resp, next): Promise<void> => {
-    const { email } = req.context
-    const user = await User.findOne({ email: email })
+    const { email } = req.context;
+    const user = await User.findOne({ email: email });
 
-    if (!user) return next("User doesnt exist")
+    if (!user) return next("User doesnt exist");
 
-    let smoothieInput: SmoothieInput
+    let smoothieInput: SmoothieInput;
 
     try {
-      smoothieInput = validateSmoothieInput(req.body)
+      smoothieInput = validateSmoothieInput(req.body);
     } catch (err) {
-      next(err)
+      next(err);
 
-      return
+      return;
     }
 
     const {
       name,
       ingredients
-    } = smoothieInput
+    } = smoothieInput;
 
-    const smoothie = new Smoothie()
+    let smoothie: Smoothie;
 
-    smoothie.name = name
-    smoothie.user = user
-
-    const errors = await validate(smoothie)
-
-    if (errors.length > 0) {
-      next("Error creating new Smoothie")
-    } else {
-      const connection = getConnection()
-      const response = await connection.manager.save(Smoothie, smoothie)
-      const ingredientsData = ingredients || []
-      const smoothieIngredients: Ingredient[] = []
-
-      for (let x = 0; x < ingredientsData.length; x++) {
-        const {
-          name,
-          quantity,
-          unit
-        } = ingredientsData[x]
-
-        const ingredient = new Ingredient()
-        ingredient.name = name
-        ingredient.quantity = quantity
-        ingredient.unit = unit
-        ingredient.smoothie = response
-
-        smoothieIngredients.push(await connection.manager.save(Ingredient, ingredient))
-      }
-
-      smoothie.ingredients = smoothieIngredients
-
-      const results = classToPlain(smoothie, { excludeExtraneousValues: true })
-
-      resp.send(results)
+    try {
+      smoothie = await smoothieService.createSmoothie(smoothieInput, user);
+    } catch (err) {
+      next("Error creating new Smoothie");
+      return;
     }
+
+    const ingredientsData = ingredients || []
+    const smoothieIngredients: Ingredient[] = []
+
+    for (let x = 0; x < ingredientsData.length; x++) {
+      const ingredientInput = ingredientsData[x];
+
+      const ingredient = await smoothieService.createIngredient(ingredientInput, smoothie)
+
+      smoothieIngredients.push(ingredient);
+    }
+
+    smoothie.ingredients = smoothieIngredients;
+
+    const results = classToPlain(smoothie, { excludeExtraneousValues: true });
+
+    resp.send(results);
   })
 
 SmoothieRouter.route("/:id")
   .get(async (req, resp): Promise<void> => {
-    const { userId } = req.context
-    const { id } = req.params
+    const { userId } = req.context;
+    const { id } = req.params;
 
-    const smoothie = await Smoothie.findOne({
-      where: {
-        user: userId,
-        id
-      },
-      relations: ["ingredients"]
-    })
+    const smoothie = await smoothieService.getSmoothie(userId, id);
 
     if (!smoothie) {
-      resp.status(404).send("Could not find smoothie")
-      return
+      resp.status(404).send("Could not find smoothie");
+      return;
     }
 
-    resp.send(classToPlain(smoothie, { excludeExtraneousValues: true }))
+    resp.send(classToPlain(smoothie, { excludeExtraneousValues: true }));
   })
   .delete(async (req, resp): Promise<void> => {
-    const { id } = req.params
-    const { userId } = req.context
+    const { id } = req.params;
+    const { userId } = req.context;
 
-    const results = await getConnection()
-      .createQueryBuilder()
-      .delete()
-      .from(Smoothie)
-      .where("id = :id", { id })
-      .andWhere("user = :userId", { userId })
-      .execute();
+    const results = await smoothieService.deleteSmoothie(userId, id);
 
     if (results.affected === 0) {
-      resp.status(404).send('Could not delete smoothie')
+      resp.status(404).send('Could not delete smoothie');
     } else {
       resp.send(true);
     }
   })
   .patch(async (req, resp, next): Promise<void> => {
-    const { userId } = req.context
-    const { id } = req.params
-    const { name } = req.body
+    const { userId } = req.context;
+    const { id } = req.params;
+    const { name } = req.body;
 
     if (!name) {
-      next("Must pass new name for smoothie")
-      return
+      next("Must pass new name for smoothie");
+      return;
     }
 
-    const smoothie = await Smoothie.findOne({
-      where: {
-        user: userId,
-        id
-      },
-      relations: ["ingredients"]
-    })
+    try {
+      const smoothie = await smoothieService.updateSmoothie(userId, id, name);
 
-    if (!smoothie) {
-      resp.status(404).send("Could not find smoothie")
-      return
+      resp.send(classToPlain(smoothie, { excludeExtraneousValues: true }));
+    } catch(err) {
+      resp.status(404).send('Could not find smoothie');
     }
 
-    smoothie.name = name
-    smoothie.save()
-
-    resp.send(classToPlain(smoothie, { excludeExtraneousValues: true }))
   })
 
-export default SmoothieRouter
+export default SmoothieRouter;

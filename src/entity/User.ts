@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from "type-graphql"
 import { v4 } from "uuid"
-import Smoothie from "./Smoothie"
+import { Smoothie } from "./"
 import { Exclude } from "class-transformer"
 
 import {
@@ -24,7 +24,7 @@ import { hashPassword } from "../utils"
 
 @ObjectType()
 @Entity()
-export default class User extends BaseEntity {
+export class User extends BaseEntity {
   @Field(() => ID, { description: "Unique identifier of the User" })
   @PrimaryColumn()
   id: string;

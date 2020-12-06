@@ -1,42 +1,36 @@
-import User from "../../entity/User"
 import { Router } from "express"
 import { createToken, isPassword, validateLoginInput, validateSignupInput } from "../../utils"
-import { validate } from "class-validator"
 import { LoginInput, SignupInput } from "types"
-import { getConnection } from "typeorm"
+import { userService } from "services"
+
 const AuthRouter = Router()
 
 AuthRouter.route("/login")
   .post(async (req, resp, next): Promise<void> => {
-    let loginParams:LoginInput
+    let loginParams:LoginInput;
 
     try {
-      loginParams = validateLoginInput(req.body)
+      loginParams = validateLoginInput(req.body);
     } catch (err) {
-      return next(err)
+      return next(err);
     }
 
     const {
       email,
       password
-    } = loginParams
+    } = loginParams;
 
-    const connection = getConnection()
+    const existingUser = await userService.getUserWithPassword(email);
 
-    const existingUser = await connection.getRepository(User)
-      .createQueryBuilder("user")
-      .addSelect("user.password")
-      .where("user.email=:email", { email })
-      .getOne()
+    if (!existingUser) next("User doesnt exist");
 
-    if (!existingUser) next("User doesnt exist")
+    let loggedIn = false;
 
-    let loggedIn = false
     try {
-      loggedIn = await isPassword(password, existingUser)
+      loggedIn = await isPassword(password, existingUser);
     } catch (err) {
-      next(err)
-      return
+      next(err);
+      return;
     }
 
     if (loggedIn && existingUser) {
@@ -44,54 +38,34 @@ AuthRouter.route("/login")
         token: createToken(existingUser)
       })
     } else {
-      next("Incorrect Login")
+      next("Incorrect Login");
     }
   })
 
 AuthRouter.route("/signup")
   .post(async (req, resp, next): Promise<void> => {
-    let signupParams: SignupInput
+    let signupParams: SignupInput;
 
     try {
-      signupParams = validateSignupInput(req.body)
+      signupParams = validateSignupInput(req.body);
     } catch (err) {
-      return next(err)
+      return next(err);
     }
 
-    const {
-      email,
-      firstName,
-      lastName,
-      password,
-      isAdmin
-    } = signupParams;
-
-    const existingUser = await User.findOne({
-      where: {
-        email
-      }
-    });
+    const existingUser = await userService.getUser(signupParams.email);
 
     if (existingUser) {
       // This is a bad idea to do in reality cause it allows easy farming of production password
       resp.status(409).send('Email already exist');
-      return
+      return;
     }
 
-    const user = new User()
-    user.email = email
-    user.password = password
-    user.firstName = firstName
-    user.lastName = lastName
-    user.isAdmin = isAdmin || false
+    try {
+      const user = await userService.createUser(signupParams);
 
-    const errors = await validate(user)
-
-    if (errors.length > 0) {
-      next("Error creating new user")
-    } else {
-      await user.save()
-      resp.send({ token: createToken(user) })
+      resp.send({ token: createToken(user) });
+    } catch (err) {
+      next("Error creating new user");
     }
   })
 

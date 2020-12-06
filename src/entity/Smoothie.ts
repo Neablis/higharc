@@ -19,13 +19,12 @@ import {
   ManyToOne,
   Index,
 } from "typeorm"
-import Ingredient from "./Ingredient"
-import User from "./User"
-
+import { Ingredient } from "./Ingredient"
+import { User } from "./"
 
 @ObjectType()
 @Entity()
-export default class Smoothie extends BaseEntity {
+export class Smoothie extends BaseEntity {
   @Field(() => ID, { description: "Unique identifier of the recipe" })
   @PrimaryColumn()
   @Expose()

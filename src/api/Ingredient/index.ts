@@ -1,15 +1,13 @@
-import { Router } from "express"
-import { getConnection } from "typeorm"
-import { classToPlain } from "class-transformer"
+import { Router } from "express";
+import { classToPlain } from "class-transformer";
 
-import { isLoggedIn, validateIngredientInput, validateIngredientUpdate } from "../../utils"
-import Ingredient from "../../entity/Ingredient"
-import { IngredientInput, IngredientUpdateInput } from "../../types"
-import Smoothie from "../../entity/Smoothie"
+import { isLoggedIn, validateIngredientInput, validateIngredientUpdate } from "../../utils";
+import { IngredientInput, IngredientUpdateInput } from "../../types";
+import { smoothieService } from "../../services";
 
-const IngredientRouter = Router()
+const IngredientRouter = Router();
 
-IngredientRouter.use(isLoggedIn)
+IngredientRouter.use(isLoggedIn);
 
 IngredientRouter.route("/")
   .get(async (req, resp, next) => {
@@ -19,13 +17,10 @@ IngredientRouter.route("/")
 
     if (!smoothieId) {
       next("Missing smoothie Id");
+      return;
     }
 
-    const ingredients = await Ingredient.find({
-      where: {
-        smoothie: smoothieId
-      }
-    })
+    const ingredients = await smoothieService.getAllIngredients(smoothieId);
 
     if (ingredients && ingredients.length > 0) {
       const first = ingredients[0];
@@ -54,30 +49,23 @@ IngredientRouter.route("/")
 
     if (!smoothieId) {
       next("Missing smoothie Id");
+      return;
     }
 
-    const smoothie = await Smoothie.findOne({
-      where: {
-        user: userId,
-        id: smoothieId
-      },
-      relations: ["ingredients"]
-    })
+    const smoothie = await smoothieService.getSmoothie(userId, smoothieId);
 
     if (!smoothie) {
       next("Invalid smoothieId");
       return;
     }
 
-    const ingredient = new Ingredient();
-    ingredient.name = ingredientInput.name;
-    ingredient.quantity = ingredientInput.quantity;
-    ingredient.unit = ingredientInput.unit;
-    ingredient.smoothie = smoothie; 
-    
-    ingredient.save();
+    try {
+      const ingredient = await smoothieService.createIngredient(ingredientInput, smoothie);
 
-    resp.send(classToPlain(ingredient, { excludeExtraneousValues: true }));
+      resp.send(classToPlain(ingredient, { excludeExtraneousValues: true }));
+    } catch (err) {
+      next(err);
+    }
   })
 
 IngredientRouter.route("/:id")
@@ -88,19 +76,16 @@ IngredientRouter.route("/:id")
     const { id } = req.params;
 
     if (!smoothieId) {
-      next("Missing smoothie Id")
+      next("Missing smoothie Id");
+      return;
     }
 
     if (!id) {
-      next("Missing ingredient Id")
+      next("Missing ingredient Id");
+      return;
     }
 
-    const ingredient = await Ingredient.findOne({
-      where: {
-        smoothie: smoothieId,
-        id
-      }
-    })
+    const ingredient = await smoothieService.getIngredient(smoothieId, id);
 
     if (!ingredient) {
       resp.status(404).send("Could not find Ingredient");
@@ -121,13 +106,16 @@ IngredientRouter.route("/:id")
 
     if (!smoothieId) {
       next("Missing smoothie Id");
+      return;
     }
 
     if (!id) {
       next("Missing ingredient Id");
+      return;
     }
 
     let ingredientUpdate: IngredientUpdateInput;
+
     try {
       ingredientUpdate = validateIngredientUpdate(req.body);
     } catch (err) {
@@ -135,12 +123,7 @@ IngredientRouter.route("/:id")
       return
     }
 
-    const ingredient = await Ingredient.findOne({
-      where: {
-        smoothie: smoothieId,
-        id
-      }
-    });
+    const ingredient = await smoothieService.getIngredient(smoothieId, id);
 
     if (!ingredient) {
       resp.status(404).send("Could not find ingredient")
@@ -151,27 +134,28 @@ IngredientRouter.route("/:id")
         return;
       }
 
-      ingredient.name = ingredientUpdate.name || ingredient.name
-      ingredient.quantity = ingredientUpdate.quantity || ingredient.quantity
-      ingredient.unit = ingredientUpdate.unit || ingredient.unit
+      const updatedIngredient = await smoothieService.updateIngredient(ingredient, ingredientUpdate);
 
-      ingredient.save()
-
-      resp.send(classToPlain(ingredient, { excludeExtraneousValues: true }))
+      resp.send(classToPlain(updatedIngredient, { excludeExtraneousValues: true }))
     }
   })
-  .delete(async (req, resp) => {
+  .delete(async (req, resp, next) => {
     const { smoothieId } = req;
     const { id } = req.params;
     const { userId } = req.context;
 
-    const ingredient = await Ingredient.findOne({
-      where: {
-        smoothie: smoothieId,
-        id
-      }
-    });
+    if (!smoothieId) {
+      next("Missing smoothie Id");
+      return;
+    }
 
+    if (!id) {
+      next("Missing ingredient Id");
+      return;
+    }
+
+    const ingredient = await smoothieService.getIngredient(smoothieId, id);
+    
     if (!ingredient) {
       resp.status(404).send("Could not find ingredient")
     } else {
@@ -181,12 +165,7 @@ IngredientRouter.route("/:id")
         return;
       }
 
-      const results = await getConnection()
-        .createQueryBuilder()
-        .delete()
-        .from(Ingredient)
-        .where("id = :id", { id })
-        .execute();
+      const results = await smoothieService.deleteIngredient(id);
 
       if (results.affected === 0) {
         resp.status(404).send('Could not delete ingredient')

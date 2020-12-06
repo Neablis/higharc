@@ -11,11 +11,13 @@ export const authMiddleware = async (
   try {
     const bearerHeader = req.headers?.authorization
 
-    if (!bearerHeader) return next()
-    const [, token] = bearerHeader?.split(" ") || []
-    if (!token) next()
+    if (!bearerHeader) return next();
 
-    const parsedToken: Token = parseToken(token)
+    const [, token] = bearerHeader?.split(" ") || [];
+
+    if (!token) next();
+
+    const parsedToken: Token = parseToken(token);
 
     const context: Context = {
       email: parsedToken.email,
@@ -24,13 +26,14 @@ export const authMiddleware = async (
     }
 
     /* eslint-disable */
-    req.context = context
+    req.context = context;
 
   } catch (err) {
-    console.error(err)
-    next(err)
+    console.error(err);
+    return next(err);
   }
-  next()
+
+  next();
 }
 
 export const logging = (
@@ -38,16 +41,16 @@ export const logging = (
   res: Response,
   next: NextFunction
 ): void => {
-  console.info(`${(new Date()).toTimeString()} ${req.method} ${req.originalUrl}`)
-  next()
+  console.info(`${(new Date()).toTimeString()} ${req.method} ${req.originalUrl}`);
+  next();
 }
 
 export const errorHandler = (
   err: Error,
   res: Response,
 ): void => {
-  console.log({ err })
-  res.status(500).send({ error: err })
+  console.log({ err });
+  res.status(500).send({ error: err });
 }
 
 export const isLoggedIn = (
@@ -56,10 +59,10 @@ export const isLoggedIn = (
   next: NextFunction
 ): void => {
   if (!req.context) {
-    res.status(401)
-    res.send("User not logged in")
+    res.status(401);
+    res.send("User not logged in");
   } else {
-    next()
+    next();
   }
 }
 
