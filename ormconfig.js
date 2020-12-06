@@ -15,6 +15,8 @@ const dbUrl = isTest ? DATABASE_URL_TEST : DATABASE_URL;
 // Do NOT set this to true in prod
 const synchronize = isTest;
 const migrationsRun = isTest;
+const dropSchema = isTest;
+
 const logging = isVerbose ? ["query", "error"] : [];
 
 module.exports = {
@@ -22,7 +24,7 @@ module.exports = {
   url: dbUrl,
   synchronize,
   migrationsRun,
-  dropSchema: isTest,
+  dropSchema,
   logging: logging,
   entities: ['lib/entity/**/*.js'],
   migrations: ['lib/migration/**/*.js'],

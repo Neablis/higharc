@@ -4,11 +4,8 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testMatch: [
-    '**/__tests__/**/*.[jt]s?(x)',
-    '!**/__tests__/coverage/**',
-    '!**/__tests__/utils/**',
-    '!**/__tests__/images/**',
+    '<rootDir>/src/__tests__/**/*.ts',
   ],
-  transform: { '\\.(js|ts)$': ['babel-jest', { rootMode: 'upward' }] },
+  transform: { '\\.(js|ts)$': 'babel-jest' }
 };
   
