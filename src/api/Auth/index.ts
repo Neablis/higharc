@@ -29,6 +29,8 @@ AuthRouter.route("/login")
       .where("user.email=:email", { email })
       .getOne()
 
+    console.log({email, existingUser})
+
     if (!existingUser) next("User doesnt exist")
 
     let loggedIn = false

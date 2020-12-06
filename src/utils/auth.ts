@@ -10,7 +10,7 @@ export const createToken = (user: User): string => {
   const token: Token = {
     exp: ONE_HOUR,
     email: user.email,
-    admin: user.isAdmin || false,
+    admin: !!user.isAdmin || false,
     userId: user.id
   }
 

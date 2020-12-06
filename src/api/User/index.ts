@@ -24,17 +24,43 @@ UserRouter.route("/")
       resp.send(results)
     }
   })
-  .delete(async (req, resp): Promise<void> => {
-    const { email } = req.context
+  .delete(async (req, resp) => {
+    const { userId } = req.context;
 
     await getConnection()
       .createQueryBuilder()
       .delete()
       .from(User)
-      .where("email = :email", { email })
+      .where("id = :id", { id: userId })
       .execute()
 
     resp.send(true)
+  })
+
+UserRouter.route("/:userId")
+  .delete(async (req, resp): Promise<void> => {
+    const { admin } = req.context
+    const { userId } = req.params;
+    
+    console.log({admin})
+
+    if (!admin) {
+      resp.status(401).send("Non admins are not allowed to delete users");
+      return;
+    }
+
+    const results = await getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(User)
+      .where("id = :id", { id: userId })
+      .execute();
+
+    if (results.affected === 0) {
+      resp.status(404).send('Could not delete user')
+    } else {
+      resp.send(true);
+    }
   })
 
 export default UserRouter
