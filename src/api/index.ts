@@ -7,7 +7,7 @@ export default (app: express.Application): void => {
   const mainRouter = Router()
   mainRouter.use("/user", user)
   mainRouter.use("/auth", auth)
-  mainRouter.use("/smoothie", smoothie)
+  mainRouter.use("/smoothies", smoothie)
 
   mainRouter.get("/", async (req, resp) => resp.send("Nothing to see. Move along."))
 

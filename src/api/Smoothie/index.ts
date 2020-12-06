@@ -60,8 +60,6 @@ SmoothieRouter.route("/")
       ingredients
     } = smoothieInput
 
-    console.log({smoothieInput})
-
     const smoothie = new Smoothie()
 
     smoothie.name = name
@@ -120,6 +118,24 @@ SmoothieRouter.route("/:id")
     }
 
     resp.send(classToPlain(smoothie, { excludeExtraneousValues: true }))
+  })
+  .delete(async (req, resp): Promise<void> => {
+    const { id } = req.params
+    const { userId } = req.context
+
+    const results = await getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(Smoothie)
+      .where("id = :id", { id })
+      .andWhere("user = :userId", { userId })
+      .execute();
+
+    if (results.affected === 0) {
+      resp.status(404).send('Could not delete user')
+    } else {
+      resp.send(true);
+    }
   })
   .patch(async (req, resp, next): Promise<void> => {
     const { userId } = req.context

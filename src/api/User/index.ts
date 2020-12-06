@@ -42,8 +42,6 @@ UserRouter.route("/:userId")
     const { admin } = req.context
     const { userId } = req.params;
     
-    console.log({admin})
-
     if (!admin) {
       resp.status(401).send("Non admins are not allowed to delete users");
       return;
