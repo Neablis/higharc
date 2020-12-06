@@ -29,8 +29,6 @@ AuthRouter.route("/login")
       .where("user.email=:email", { email })
       .getOne()
 
-    console.log({email, existingUser})
-
     if (!existingUser) next("User doesnt exist")
 
     let loggedIn = false
@@ -66,16 +64,17 @@ AuthRouter.route("/signup")
       lastName,
       password,
       isAdmin
-    } = signupParams
+    } = signupParams;
 
     const existingUser = await User.findOne({
       where: {
         email
       }
-    })
+    });
 
     if (existingUser) {
-      next("User already exists")
+      // This is a bad idea to do in reality cause it allows easy farming of production password
+      resp.status(409).send('Email already exist');
       return
     }
 
