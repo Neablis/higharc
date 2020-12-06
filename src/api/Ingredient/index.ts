@@ -25,7 +25,7 @@ IngredientRouter.route("/")
     })
 
     if (ingredients && ingredients.length > 0) {
-      let first = ingredients[0];
+      const first = ingredients[0];
 
       // Requesting a smoothie user doesnt own
       if (first.smoothie.user.id !== userId) {
