@@ -9,6 +9,8 @@ A Simple Restful server for
 + /src
 	+ /api
 		+ Folders for each router
+	+ /services
+		+ Controllers for interacting with database for each router
 	+ /entity
 		+ DB models for orm
 	+ /migration
