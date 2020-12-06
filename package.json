@@ -34,7 +34,7 @@
     "migration:revert": "npx typeorm migration:revert",
     "migration:drop": "npx typeorm schema:drop",
     "drop": "npm run-script migration:drop && npm run-script migration:run",
-    "lint": "eslint . --ext .ts --fix"
+    "lint": "eslint . --config './.eslintrc.js' --ext .ts"
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.12.1",

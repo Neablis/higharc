@@ -1,66 +1,78 @@
-import { validate } from "class-validator";
-import { classToPlain, deserializeArray } from 'class-transformer';
+import { validate } from "class-validator"
+import { classToPlain } from "class-transformer"
 
-import { Router } from 'express';
-import { getConnection } from "typeorm";
+import { Router } from "express"
+import { getConnection } from "typeorm"
 
-import Smoothie from '../../entity/Smoothie';
-import { isLoggedIn, validateSmoothieInput } from '../../utils';
+import Smoothie from "../../entity/Smoothie"
+import { isLoggedIn, validateSmoothieInput } from "../../utils"
 import ingredient from "../Ingredient"
-import User from '../../entity/User';
-import Ingredient from "../../entity/Ingredient";
-import { SmoothieInput } from "types/smoothie";
+import User from "../../entity/User"
+import Ingredient from "../../entity/Ingredient"
+import { SmoothieInput } from "types/smoothie"
 
-const SmoothieRouter = Router();
+const SmoothieRouter = Router()
 
-SmoothieRouter.use('/:smoothieId/ingredients', ingredient);
+// Exposing the smoothie Id for any down stream routers
+SmoothieRouter.param("smoothieId", (req, res, next, id) => {
+  /* eslint-disable */
+  req.smoothieId = id
+
+  next()
+})
+
+SmoothieRouter.use("/:smoothieId/ingredients", ingredient)
 
 SmoothieRouter.use(isLoggedIn)
 
-SmoothieRouter.route('/')
+SmoothieRouter.route("/")
   .get(async (req, resp): Promise<void> => {
-    const { userId } = req.context;
-    let smoothies = await Smoothie.find({
+    const { userId } = req.context
+    const smoothies = await Smoothie.find({
       where: {
         user: userId
       },
-      relations: ['ingredients']
-    });
+      relations: ["ingredients"]
+    })
 
     const serializedSmoothies = classToPlain(smoothies, { excludeExtraneousValues: true })
 
     resp.send(serializedSmoothies)
   })
   .post(async (req, resp, next): Promise<void> => {
-    const { email } = req.context;
-    const user = await User.findOne({ email: email });
+    const { email } = req.context
+    const user = await User.findOne({ email: email })
 
-    if (!user) return next('User doesnt exist');
+    if (!user) return next("User doesnt exist")
 
-    let smoothieInput:SmoothieInput;
+    let smoothieInput: SmoothieInput
 
     try {
       smoothieInput = validateSmoothieInput(req.body)
     } catch (err) {
-      return next(err);
+      next(err)
+
+      return
     }
 
     const {
       name,
       ingredients
-    } = smoothieInput;
+    } = smoothieInput
 
-    const smoothie = new Smoothie();
+    console.log({smoothieInput})
 
-    smoothie.name = name;
-    smoothie.user = user;
+    const smoothie = new Smoothie()
 
-    const errors = await validate(smoothie);
+    smoothie.name = name
+    smoothie.user = user
+
+    const errors = await validate(smoothie)
 
     if (errors.length > 0) {
-      next('Error creating new Smoothie');
+      next("Error creating new Smoothie")
     } else {
-      const connection = getConnection();
+      const connection = getConnection()
       const response = await connection.manager.save(Smoothie, smoothie)
       const ingredientsData = ingredients || []
       const smoothieIngredients: Ingredient[] = []
@@ -70,18 +82,18 @@ SmoothieRouter.route('/')
           name,
           quantity,
           unit
-        } = ingredientsData[x];
+        } = ingredientsData[x]
 
-        const ingredient = new Ingredient();
-        ingredient.name = name;
-        ingredient.quantity = quantity;
+        const ingredient = new Ingredient()
+        ingredient.name = name
+        ingredient.quantity = quantity
         ingredient.unit = unit
-        ingredient.smoothie = response;
+        ingredient.smoothie = response
 
         smoothieIngredients.push(await connection.manager.save(Ingredient, ingredient))
       }
 
-      smoothie.ingredients = smoothieIngredients;
+      smoothie.ingredients = smoothieIngredients
 
       const results = classToPlain(smoothie, { excludeExtraneousValues: true })
 
@@ -89,34 +101,34 @@ SmoothieRouter.route('/')
     }
   })
 
-SmoothieRouter.route('/:id')
-  .get(async (req, resp, next): Promise<void> => {
-    const { userId } = req.context;
-    const { id } = req.params;
+SmoothieRouter.route("/:id")
+  .get(async (req, resp): Promise<void> => {
+    const { userId } = req.context
+    const { id } = req.params
 
     const smoothie = await Smoothie.findOne({
       where: {
         user: userId,
         id
       },
-      relations: ['ingredients']
-    });
+      relations: ["ingredients"]
+    })
 
     if (!smoothie) {
-      resp.status(404).send('Could not find smoothie')
-      return;
+      resp.status(404).send("Could not find smoothie")
+      return
     }
 
     resp.send(classToPlain(smoothie, { excludeExtraneousValues: true }))
   })
   .patch(async (req, resp, next): Promise<void> => {
-    const { userId } = req.context;
-    const { id } = req.params;
-    const { name } = req.body;
+    const { userId } = req.context
+    const { id } = req.params
+    const { name } = req.body
 
     if (!name) {
-      next('Must pass new name for smoothie')
-      return;
+      next("Must pass new name for smoothie")
+      return
     }
 
     const smoothie = await Smoothie.findOne({
@@ -124,18 +136,18 @@ SmoothieRouter.route('/:id')
         user: userId,
         id
       },
-      relations: ['ingredients']
-    });
+      relations: ["ingredients"]
+    })
 
     if (!smoothie) {
-      resp.status(404).send('Could not find smoothie')
-      return;
+      resp.status(404).send("Could not find smoothie")
+      return
     }
 
-    smoothie.name = name;
-    smoothie.save();
+    smoothie.name = name
+    smoothie.save()
 
     resp.send(classToPlain(smoothie, { excludeExtraneousValues: true }))
   })
 
-export default SmoothieRouter;
+export default SmoothieRouter

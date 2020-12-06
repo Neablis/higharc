@@ -1,7 +1,14 @@
-import { IngredientUnit } from "../entity";
-import { LoginInput, SignupInput, SmoothieInput } from "../types"
+import { IngredientUnit } from "../entity"
+import {
+  IngredientInput,
+  IngredientUpdateInput,
+  LoginInput,
+  SignupInput,
+  SmoothieInput
+} from "../types"
 
-export const validateSmoothieInput = (params: any): SmoothieInput => {
+/* eslint-disable */
+export const validateSmoothieInput = (params): SmoothieInput => {
   if (!params.name) {
     throw new Error('Name of smoothie is missing');
   }
@@ -10,29 +17,34 @@ export const validateSmoothieInput = (params: any): SmoothieInput => {
     if (!Array.isArray(params.ingredients)) {
       throw new Error('Ingredients must be an array of ingredients');
     }
-
-    for (let x = 0; x < params.ingredients.length; x++) {
-      let ingredient = params.ingredients[x];
-
-      if (!ingredient.name || !ingredient.quantity || !ingredient.unit) {
-        throw new Error('Ingredients must have a name, quantity and unit');
-      }
-
-      if (!IngredientUnit[ingredient.unit]) {
-        throw new Error('Not recognized unit type');
-      }
-
-      ingredient.unit = IngredientUnit[ingredient.unit];
-    }
   }
 
   return {
     name: params.name,
-    ingredients: params.ingredients
+    ingredients: params.ingredients ? params.ingredients.map(validateIngredientInput) : []
   }
 }
 
-export const validateLoginInput = (params: any): LoginInput => {
+export const validateIngredientInput = (params): IngredientInput => {
+  if (!params.name || !params.quantity || !params.unit) {
+    throw new Error('Ingredients must have a name, quantity and unit');
+  }
+
+  const unit = params.unit ? params.unit.toUpperCase() : '';
+
+  if (!IngredientUnit[unit]) {
+    throw new Error('Not recognized unit type');
+  }
+
+  return {
+    name: params.name,
+    quantity: params.quantity,
+    unit: IngredientUnit[unit]
+  }
+}
+
+/* eslint-disable */
+export const validateLoginInput = (params): LoginInput => {
   if (!params.email) {
     throw new Error('Email is missing')
   }
@@ -47,7 +59,8 @@ export const validateLoginInput = (params: any): LoginInput => {
   }
 }
 
-export const validateSignupInput = (params: any): SignupInput => {
+/* eslint-disable */
+export const validateSignupInput = (params): SignupInput => {
   validateLoginInput(params);
 
   return {
@@ -58,3 +71,27 @@ export const validateSignupInput = (params: any): SignupInput => {
     password: params.password
   }
 }
+
+/* eslint-disable */
+export const validateIngredientUpdate = (params): IngredientUpdateInput => {
+
+  if (!params.name && !params.quantity && !params.unit) {
+    throw new Error('Must attempt to updated at least 1 field');
+  }
+
+  if (params.unit) {
+    params.unit = params.unit.toUpperCase();
+    if (!IngredientUnit[params.unit]) {
+      throw new Error('Not recognized unit type');
+    } else {
+      params.unit = IngredientUnit[params.unit]
+    }
+  }
+
+  return {
+    name: params.name,
+    quantity: params.quantity,
+    unit: params.unit
+  }
+}
+

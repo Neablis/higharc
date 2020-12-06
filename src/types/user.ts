@@ -1,4 +1,4 @@
-import User from '../entity/User';
+import User from "../entity/User"
 
 export class LoginInput {
   email: string;

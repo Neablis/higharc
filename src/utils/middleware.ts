@@ -1,8 +1,7 @@
-import { Response, Request, NextFunction } from 'express';
-import { MiddlewareFn, AuthChecker } from 'type-graphql';
+import { Response, Request, NextFunction } from "express"
 
-import { Context, Token } from '../types';
-import { parseToken } from './auth';
+import { Context, Token } from "../types"
+import { parseToken } from "./auth"
 
 export const authMiddleware = async (
   req: Request,
@@ -10,11 +9,11 @@ export const authMiddleware = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const bearerHeader = req.headers?.authorization;
+    const bearerHeader = req.headers?.authorization
 
-    if (!bearerHeader) return next();
-    const [, token] = bearerHeader?.split(' ') || [];
-    if (!token) next();
+    if (!bearerHeader) return next()
+    const [, token] = bearerHeader?.split(" ") || []
+    if (!token) next()
 
     const parsedToken: Token = parseToken(token)
 
@@ -24,29 +23,28 @@ export const authMiddleware = async (
       userId: parsedToken.userId
     }
 
-    req.context = context;
+    /* eslint-disable */
+    req.context = context
 
   } catch (err) {
-    console.error(err);
+    console.error(err)
     next(err)
   }
-  next();
-};
+  next()
+}
 
 export const logging = (
   req: Request,
   res: Response,
   next: NextFunction
 ): void => {
-  // console.info(`${(new Date()).toTimeString()} ${req.method} ${req.originalUrl}`)
-  next();
-};
+  console.info(`${(new Date()).toTimeString()} ${req.method} ${req.originalUrl}`)
+  next()
+}
 
 export const errorHandler = (
   err: Error,
-  req: Request,
   res: Response,
-  next: NextFunction
 ): void => {
   console.log({ err })
   res.status(500).send({ error: err })
@@ -59,18 +57,16 @@ export const isLoggedIn = (
 ): void => {
   if (!req.context) {
     res.status(401)
-    res.send('User not logged in')
+    res.send("User not logged in")
   } else {
-    next();
+    next()
   }
 }
 
 export const missingRoute = (
-  req: Request,
   res: Response,
-  next: NextFunction
 ): void => {
   res.status(404).send({
-    error: 'Not found'
+    error: "Not found"
   })
 }

@@ -1,4 +1,4 @@
-import { IngredientUnit } from '../entity/Ingredient';
+import { IngredientUnit } from "../entity/Ingredient"
 
 export interface SmoothieInput {
   name: string;
@@ -12,7 +12,7 @@ export interface IngredientInput {
 }
 
 export interface IngredientUpdateInput {
-  name: string;
-  quantity: number;
-  unit: IngredientUnit;
+  name?: string;
+  quantity?: number;
+  unit?: IngredientUnit;
 }

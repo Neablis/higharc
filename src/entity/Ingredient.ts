@@ -1,7 +1,7 @@
-import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
-import { v4 } from 'uuid';
+import { Field, ID, ObjectType, registerEnumType } from "type-graphql"
+import { v4 } from "uuid"
 
-import { MinLength, IsInt, Min, Max, IsEnum } from "class-validator";
+import { MinLength, IsInt, Min, Max, IsEnum } from "class-validator"
 
 import {
   BaseEntity,
@@ -12,10 +12,10 @@ import {
   UpdateDateColumn,
   BeforeInsert,
   ManyToOne
-} from 'typeorm';
+} from "typeorm"
 
-import Smoothie from './Smoothie';
-import { Expose } from 'class-transformer';
+import Smoothie from "./Smoothie"
+import { Expose } from "class-transformer"
 
 export enum IngredientUnit {
   CUP = "cup",
@@ -27,20 +27,20 @@ export enum IngredientUnit {
 registerEnumType(IngredientUnit, {
   name: "IngredientUnits", // this one is mandatory
   description: "Possible Units for a ingredient", // this one is optional
-});
+})
 
 @ObjectType()
 @Entity()
 export default class Ingredient extends BaseEntity {
-  @Field(() => ID, { description: 'Unique identifier of the ingredient' })
+  @Field(() => ID, { description: "Unique identifier of the ingredient" })
   @PrimaryColumn()
   @Expose()
   id: string;
 
   @Column({ nullable: false })
-  @Field({ nullable: false, description: 'Name of the ingredient' })
+  @Field({ nullable: false, description: "Name of the ingredient" })
   @MinLength(3, {
-    message: 'Name is too short',
+    message: "Name is too short",
   })
   @Expose()
   name: string;
@@ -48,12 +48,12 @@ export default class Ingredient extends BaseEntity {
   @ManyToOne(() => Smoothie, (smoothie) => smoothie.ingredients, {
     nullable: false,
     eager: true,
-    onDelete: 'CASCADE',
+    onDelete: "CASCADE",
   })
   smoothie: Smoothie;
 
   @Column({ nullable: false })
-  @Field({ nullable: false, description: 'How many of the ingredient for recipe' })
+  @Field({ nullable: false, description: "How many of the ingredient for recipe" })
   @IsInt()
   @Min(0)
   @Max(100)
@@ -65,23 +65,23 @@ export default class Ingredient extends BaseEntity {
     enum: IngredientUnit,
     nullable: false
   })
-  @Field(() => IngredientUnit, { nullable: false, description: 'Units for the quantity of the ingredient' })
+  @Field(() => IngredientUnit, { nullable: false, description: "Units for the quantity of the ingredient" })
   @IsEnum(IngredientUnit)
   @Expose()
   unit: IngredientUnit
 
-  @Field({ description: 'Date Created' })
-  @CreateDateColumn({ type: 'timestamp' })
+  @Field({ description: "Date Created" })
+  @CreateDateColumn({ type: "timestamp" })
   @Expose()
   createdAt: Date;
 
-  @Field({ description: 'Date Last Updated' })
-  @UpdateDateColumn({ type: 'timestamp' })
+  @Field({ description: "Date Last Updated" })
+  @UpdateDateColumn({ type: "timestamp" })
   @Expose()
   updatedAt: Date;
 
   @BeforeInsert()
-  addId() {
-    this.id = v4();
+  addId(): void {
+    this.id = v4()
   }
 }

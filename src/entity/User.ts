@@ -1,12 +1,12 @@
-import { Field, ID, ObjectType } from 'type-graphql';
-import { v4 } from 'uuid';
-import Smoothie from './Smoothie';
-import { Exclude } from 'class-transformer';
+import { Field, ID, ObjectType } from "type-graphql"
+import { v4 } from "uuid"
+import Smoothie from "./Smoothie"
+import { Exclude } from "class-transformer"
 
 import {
   IsEmail,
   MinLength
-} from 'class-validator';
+} from "class-validator"
 
 import {
   BaseEntity,
@@ -18,34 +18,34 @@ import {
   BeforeInsert,
   OneToMany,
   Index
-} from 'typeorm';
+} from "typeorm"
 
-import { hashPassword } from '../utils';
+import { hashPassword } from "../utils"
 
 @ObjectType()
 @Entity()
 export default class User extends BaseEntity {
-  @Field(() => ID, { description: 'Unique identifier of the User' })
+  @Field(() => ID, { description: "Unique identifier of the User" })
   @PrimaryColumn()
   id: string;
 
-  @Field({ nullable: true, description: 'Users first name' })
+  @Field({ nullable: true, description: "Users first name" })
   @Column({ nullable: true })
   firstName?: string;
 
-  @Field({ nullable: true, description: 'Users last name' })
+  @Field({ nullable: true, description: "Users last name" })
   @Column({ nullable: true })
   lastName?: string;
 
   @Column({ nullable: false })
-  @Field({ nullable: false, description: 'Users email address' })
+  @Field({ nullable: false, description: "Users email address" })
   @Index({ unique: true })
   @IsEmail()
   email: string;
 
   @Column({ nullable: false, select: false })
   @MinLength(6, {
-    message: 'Password is too short',
+    message: "Password is too short",
   })
   @Exclude()
   password: string;
@@ -53,25 +53,25 @@ export default class User extends BaseEntity {
   @OneToMany(() => Smoothie, (smoothie) => smoothie.user)
   smoothies: Smoothie[];
 
-  @Field({ description: 'Users role (only admin exists)' })
+  @Field({ description: "Users role (only admin exists)" })
   @Column({ default: false })
   isAdmin: boolean;
 
-  @Field({ description: 'Date Created' })
-  @CreateDateColumn({ type: 'timestamp' })
+  @Field({ description: "Date Created" })
+  @CreateDateColumn({ type: "timestamp" })
   createdAt: Date;
 
-  @Field({ description: 'Date Last Updated' })
-  @UpdateDateColumn({ type: 'timestamp' })
+  @Field({ description: "Date Last Updated" })
+  @UpdateDateColumn({ type: "timestamp" })
   updatedAt: Date;
 
   @BeforeInsert()
-  addId() {
-    this.id = v4();
+  addId(): void {
+    this.id = v4()
   }
 
   @BeforeInsert()
-  async hashPassword() {
-    this.password = await hashPassword(this.password);
+  async hashPassword(): Promise<void> {
+    this.password = await hashPassword(this.password)
   }
 }

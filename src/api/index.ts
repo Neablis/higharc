@@ -1,16 +1,15 @@
-import { NextFunction, Response, Request, Router } from "express";
-import user from './User';
-import smoothie from './Smoothie';
-import auth from './Auth';
+import express, { Router } from "express"
+import user from "./User"
+import smoothie from "./Smoothie"
+import auth from "./Auth"
 
-export default (app) => {
-  const mainRouter = Router();
-  mainRouter.use('/user', user);
-  mainRouter.use('/auth', auth);
+export default (app: express.Application): void => {
+  const mainRouter = Router()
+  mainRouter.use("/user", user)
+  mainRouter.use("/auth", auth)
+  mainRouter.use("/smoothie", smoothie)
 
-  mainRouter.use('/smoothie', smoothie);
+  mainRouter.get("/", async (req, resp) => resp.send("Nothing to see. Move along."))
 
-  mainRouter.get('/', async (req, resp) => resp.send('Nothing to see. Move along.'));
-
-  app.use(mainRouter);
-};
+  app.use(mainRouter)
+}

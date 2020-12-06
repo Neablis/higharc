@@ -1,10 +1,10 @@
-import { Field, ID, ObjectType } from 'type-graphql';
-import { v4 } from 'uuid';
+import { Field, ID, ObjectType } from "type-graphql"
+import { v4 } from "uuid"
 
 import {
   MinLength
-} from 'class-validator';
-import { Expose } from 'class-transformer';
+} from "class-validator"
+import { Exclude, Expose } from "class-transformer"
 
 
 import {
@@ -18,15 +18,15 @@ import {
   OneToMany,
   ManyToOne,
   Index,
-} from 'typeorm';
-import Ingredient from './Ingredient';
-import User from './User';
+} from "typeorm"
+import Ingredient from "./Ingredient"
+import User from "./User"
 
 
 @ObjectType()
 @Entity()
 export default class Smoothie extends BaseEntity {
-  @Field(() => ID, { description: 'Unique identifier of the recipe' })
+  @Field(() => ID, { description: "Unique identifier of the recipe" })
   @PrimaryColumn()
   @Expose()
   id: string;
@@ -34,7 +34,7 @@ export default class Smoothie extends BaseEntity {
   @Column({ nullable: false })
   @Field({ nullable: false, description: "Name of the recipe (must be longer than 3 characters)" })
   @MinLength(3, {
-    message: 'Name is too short',
+    message: "Name is too short",
   })
   @Index({ unique: true })
   @Expose()
@@ -47,23 +47,24 @@ export default class Smoothie extends BaseEntity {
   @ManyToOne(() => User, (user) => user.smoothies, {
     nullable: true,
     eager: true,
-    cascade: ['insert'],
-    onDelete:'CASCADE'
+    cascade: ["insert"],
+    onDelete: "CASCADE"
   })
+  @Exclude()
   user: User;
 
-  @Field({ description: 'Date Created' })
-  @CreateDateColumn({ type: 'timestamp' })
+  @Field({ description: "Date Created" })
+  @CreateDateColumn({ type: "timestamp" })
   @Expose()
   createdAt: Date;
 
-  @Field({ description: 'Date Last Updated' })
-  @UpdateDateColumn({ type: 'timestamp' })
+  @Field({ description: "Date Last Updated" })
+  @UpdateDateColumn({ type: "timestamp" })
   @Expose()
   updatedAt: Date;
 
   @BeforeInsert()
-	addId() {
-		this.id = v4();
+  addId(): void {
+    this.id = v4()
   }
 }
