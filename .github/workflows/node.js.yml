@@ -38,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --dev
 
+      - name: Build Code
+        run: yarn build
+
       - name: Run Tests
         # Runs a script that creates a PostgreSQL client, populates
         # the client with data, and retrieves data
