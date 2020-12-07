@@ -15,7 +15,7 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
-          POSTGRES_PASSWORD: password
+          POSTGRES_PASSWORD: higharc
           POSTGRES_USER: higharc
           POSTGRES_DB: higharc
         # Set health checks to wait until postgres has started
