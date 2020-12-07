@@ -45,5 +45,5 @@ jobs:
         # Environment variable used by the `client.js` script to create
         # a new PostgreSQL client.
         env:
-          DATABASE_URL: postgresql://higharc:higharc@localhost/higharc
+          DATABASE_URL_TEST: postgresql://higharc:higharc@localhost/higharc
           SECRET: supersecretpassword

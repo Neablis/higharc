@@ -11,13 +11,11 @@ const isVerbose = VERBOSE ? true : false;
 
 const dbUrl = isTest ? DATABASE_URL_TEST : DATABASE_URL;
 
-// Type ORM thing. Looks at entities and creates schema for the database
-// Do NOT set this to true in prod
-const synchronize = isTest;
+const synchronize = false;
 const migrationsRun = isTest;
 const dropSchema = isTest;
 
-const logging = isVerbose ? ["query", "error"] : [];
+const logging = isVerbose ? true : [];
 
 module.exports = {
   type: 'postgres',
@@ -38,4 +36,4 @@ module.exports = {
   extra: {
     ssl: isProduction ? { rejectUnauthorized: false } : false,
   },
-};
+}

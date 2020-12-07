@@ -1,10 +1,10 @@
-import { Field, ID, ObjectType } from "type-graphql"
-import { v4 } from "uuid"
+import { Field, ID, ObjectType } from "type-graphql";
+import { v4 } from "uuid";
+import { Exclude, Expose } from "class-transformer";
 
 import {
   MinLength
-} from "class-validator"
-import { Exclude, Expose } from "class-transformer"
+} from "class-validator";
 
 
 import {
@@ -19,8 +19,8 @@ import {
   ManyToOne,
   Index,
 } from "typeorm"
-import { Ingredient } from "./Ingredient"
-import { User } from "./"
+import { Ingredient } from "./Ingredient";
+import { User } from ".";
 
 @ObjectType()
 @Entity()

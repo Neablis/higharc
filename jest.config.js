@@ -4,7 +4,9 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testMatch: [
-    '<rootDir>/src/__tests__/**/*.ts',
+    '**/__tests__/**/*.test.js',
+    '!lib/',
+
   ],
   transform: { '\\.(js|ts)$': 'babel-jest' }
 };

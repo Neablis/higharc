@@ -1,12 +1,12 @@
-import { Field, ID, ObjectType } from "type-graphql"
-import { v4 } from "uuid"
-import { Smoothie } from "./"
-import { Exclude } from "class-transformer"
+import { Field, ID, ObjectType } from "type-graphql";
+import { v4 } from "uuid";
+import { Smoothie } from ".";
+import { Exclude } from "class-transformer";
 
 import {
   IsEmail,
   MinLength
-} from "class-validator"
+} from "class-validator";
 
 import {
   BaseEntity,
@@ -18,9 +18,9 @@ import {
   BeforeInsert,
   OneToMany,
   Index
-} from "typeorm"
+} from "typeorm";
 
-import { hashPassword } from "../utils"
+import { hashPassword } from "../utils";
 
 @ObjectType()
 @Entity()

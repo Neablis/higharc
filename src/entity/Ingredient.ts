@@ -14,7 +14,7 @@ import {
   ManyToOne
 } from "typeorm";
 
-import { Smoothie } from "./";
+import { Smoothie } from ".";
 import { Expose } from "class-transformer";
 
 export enum IngredientUnit {

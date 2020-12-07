@@ -24,7 +24,7 @@ export class UserService {
     const errors = await validate(user)
 
     if (errors.length > 0) {
-      throw new Error(errors.join(', '));
+      throw new Error('Error creating user');
     } else {
       await user.save();
       return user;
